@@ -109,6 +109,7 @@ static void plugin_close(void* dev_ops_priv)
 
 static int plugin_ioctl(void* dev_ops_priv, int fd, unsigned long int cmd, void* arg)
 {
+    struct v4l_geocam_demux_state* state = (struct v4l_geocam_demux_state*)dev_ops_priv;
 
 #define IOCTL_WITH_TRANSFORMED_PIXEL_FORMAT(TYPE,FIELD) \
     do {                                                \
@@ -207,7 +208,6 @@ static int plugin_ioctl(void* dev_ops_priv, int fd, unsigned long int cmd, void*
             struct v4l2_buffer* buf = (struct v4l2_buffer*)arg;
             if (buf->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
             {
-                struct v4l_geocam_demux_state* state = (struct v4l_geocam_demux_state*)dev_ops_priv;
                 uint8_t* data = NULL;
                 switch (buf->memory)
                 {
