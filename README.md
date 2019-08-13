@@ -1,6 +1,6 @@
 # MDG-217 camera assembly stream format userspace parser V4L2 plugin
 
-Intended to be used together with the [UVC kernel patch](https://github.com/digitalloggers/geocam-uvc) and the [configuration binaries](https://github.com/digitalloggers/geocam-bin).
+May be used with an unpatched kernel, or with a kernel patched with the [UVC kernel patch](https://github.com/digitalloggers/geocam-uvc). Additionally, [configuration binaries](https://github.com/digitalloggers/geocam-bin) are required.
 
 Needs libv4l2, including development headers for build (apt-get install libv4l-dev on Debian and derivatives).
 

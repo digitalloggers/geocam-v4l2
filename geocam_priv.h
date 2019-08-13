@@ -33,10 +33,15 @@
 #define MUX_XU_SEL_STOP_CHANNEL  17
 
 /*
- * We expect a single stream with the following hard-coded fourcc.
+ * We expect a single stream with either the following hard-coded fourcc ...
  */
 
 #define MUX_FOURCC          v4l2_fourcc_be('M','U','X',' ')
+
+/* ... or the zero fourcc for an unpatched kernel. */
+
+#define MUX_FOURCC_UNKNOWN  0
+
 #define PAYLOAD_FOURCC      V4L2_PIX_FMT_H264
 #define PAYLOAD_DESCRIPTION "H.264"
 

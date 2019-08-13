@@ -21,6 +21,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <sys/mman.h>
@@ -49,6 +50,9 @@ static control_mapping extra_controls[] ={
     { .id = V4L2_CID_MUX_XU_STOP_CHANNEL,  .name = "Channel stop",  .entity = MUX1_XU_GUID, .selector = MUX_XU_SEL_STOP_CHANNEL,  .size = 32, .offset = 0, .v4l2_type = V4L2_CTRL_TYPE_INTEGER, .data_type = UVC_CTRL_DATA_TYPE_SIGNED }
 };
 
+#define GEOCAM_DRIVER_NAME "uvcvideo"
+#define GEOCAM_CARD_NAME "Condor: Condor"
+
 struct v4l_mmapped_buf
 {
     void* data;
@@ -60,18 +64,31 @@ struct v4l_geocam_demux_state
     struct geocam_demux_state state;
     struct v4l_mmapped_buf* mmapped_bufs;
     unsigned mmapped_buf_count;
+    uint32_t mux_fourcc;
 };
 
 static void* plugin_init(int fd)
 {
     struct v4l2_fmtdesc fmt;
+    struct v4l2_capability cap;
     int rc;
     struct v4l_geocam_demux_state* ret = NULL;
 
     fmt.index = 0;
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     rc = SYS_IOCTL(fd, VIDIOC_ENUM_FMT, &fmt);
-    if ((rc == 0) && (fmt.pixelformat == MUX_FOURCC))
+    if (
+        (rc == 0) &&
+        (
+            (fmt.pixelformat == MUX_FOURCC) ||
+            (
+                (fmt.pixelformat == MUX_FOURCC_UNKNOWN) &&
+                (SYS_IOCTL(fd, VIDIOC_QUERYCAP, &cap) == 0) &&
+                (strcmp((char*)cap.driver, GEOCAM_DRIVER_NAME) == 0) &&
+                (strcmp((char*)cap.card, GEOCAM_CARD_NAME) == 0)
+            )
+        )
+    )
     {
         ret = (struct v4l_geocam_demux_state*)calloc (1, sizeof (struct v4l_geocam_demux_state));
         if (ret)
@@ -81,6 +98,7 @@ static void* plugin_init(int fd)
             {
                 SYS_IOCTL(fd, UVCIOC_CTRL_MAP, &extra_controls[i]);
             }
+            ret->mux_fourcc = fmt.pixelformat;
         }
     }
     return (void*)ret;
@@ -118,11 +136,11 @@ static int plugin_ioctl(void* dev_ops_priv, int fd, unsigned long int cmd, void*
             (typed_arg->FIELD == PAYLOAD_FOURCC)        \
         )                                               \
         {                                               \
-            typed_arg->FIELD = MUX_FOURCC;              \
+            typed_arg->FIELD = state->mux_fourcc;       \
         }                                               \
         ret = SYS_IOCTL(fd, cmd, arg);                  \
         if (                                            \
-            (typed_arg->FIELD == MUX_FOURCC)            \
+            (typed_arg->FIELD == state->mux_fourcc)     \
         )                                               \
         {                                               \
             typed_arg->FIELD = PAYLOAD_FOURCC;          \
