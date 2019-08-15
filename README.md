@@ -2,6 +2,10 @@
 
 May be used with an unpatched kernel, or with a kernel patched with the [UVC kernel patch](https://github.com/digitalloggers/geocam-uvc). Additionally, [configuration binaries](https://github.com/digitalloggers/geocam-bin) are required.
 
+## Note that this plugin is optional and not necessary when using the raw capture device available with [recent](https://github.com/digitalloggers/geocam-bin/commit/06300c7dfcaec53dfb7f3cd8891db5d51120fed8) configuration binaries
+
+The plugin is necessary for accessing the H.264-encoded stream and is not used with raw streams.
+
 Needs libv4l2, including development headers for build (apt-get install libv4l-dev on Debian and derivatives).
 
 Place the plugin .so built using 'make' into the distribution-specific libv4l plugin directory (/usr/lib/$(dpkg-architecture -qDEB\_HOST\_MULTIARCH)/libv4l/plugins/ on Debian and derivatives).
