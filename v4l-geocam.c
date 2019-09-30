@@ -1,5 +1,5 @@
 /*
- * GeoVision camera MUX format support.
+ * GEO Semiconductor camera MUX format support.
  *
  * Copyright (C) 2019 Digital Loggers, Inc.
  *

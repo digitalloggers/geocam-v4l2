@@ -1,5 +1,5 @@
 /*
- * Minimal GeoVision camera control definitions.
+ * Minimal GEO Semiconductor camera control definitions.
  *
  * Copyright (C) 2019 Digital Loggers, Inc.
  *

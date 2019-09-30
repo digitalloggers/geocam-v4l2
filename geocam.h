@@ -1,5 +1,5 @@
 /*
- * Minimal GeoVision camera MUX format definitions.
+ * Minimal GEO Semiconductor camera MUX format definitions.
  *
  * Copyright (C) 2019 Digital Loggers, Inc.
  *
